@@ -24,6 +24,12 @@
     variant = "";
   };
 
+  environment.systemPackages = with pkgs; [
+    home-manager
+  ];
+  
+  programs.home-manager.enable = true;
+
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.fabric = {
     isNormalUser = true;
