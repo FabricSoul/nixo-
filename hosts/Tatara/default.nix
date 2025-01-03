@@ -25,4 +25,7 @@
       package = config.boot.kernelPackages.nvidiaPackages.stable;
     };
   };
+  programs = {
+    steam.enable = true;
+  };
 }

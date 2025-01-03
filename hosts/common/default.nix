@@ -75,7 +75,6 @@
     defaultSession = "hyprland";
   };
   programs = {
-    steam.enable = true;
     hyprland.enable = true;
     zsh.enable = true;
   };
