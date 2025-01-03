@@ -33,7 +33,13 @@
         Tatara = lib.nixosSystem {
           system = "x86_64-linux";
           modules = [ 
-            ./configuration.nix
+            ./hosts/Tatara/default.nix
+          ];
+        };
+        Nixilla = lib.nixosSystem {
+          system = "aarch_64-linux";
+          modules = [ 
+            ./hosts/Nixilla/default.nix
           ];
         };
       };
