@@ -31,13 +31,11 @@
       # Nixpkgs instantiated for supported systems
       nixpkgsFor = forAllSystems (system: import nixpkgs {
         inherit system;
-        config.allowUnfree = true;
       });
       
       # Unstable pkgs instantiated for supported systems
       nixpkgsUnstableFor = forAllSystems (system: import nixpkgs-unstable {
         inherit system;
-        config.allowUnfree = true;
       });
     in {
       nixosConfigurations = {
