@@ -4,6 +4,7 @@
   # hyprpanel,
   pkgsUnstable,
   nixvim,
+  hyprland,
   ...
 }: {
   nixpkgs.config = {
@@ -610,6 +611,7 @@
   };
   wayland.windowManager.hyprland = {
     enable = true;
+    package = hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
     settings = {
       "$mainMod" = "SUPER";
       "$terminal" = "kitty";
