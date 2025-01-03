@@ -1,7 +1,7 @@
 {
   config,
   pkgs,
-  hyprpanel,
+  # hyprpanel,
   pkgsUnstable,
   nixvim,
   ...
@@ -29,7 +29,7 @@
     pavucontrol
     wofi
     deno
-    hyprpanel
+    # hyprpanel
     alejandra
     rustup
     tmuxPlugins.sensible
