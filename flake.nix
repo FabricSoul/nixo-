@@ -49,6 +49,7 @@
       };
     in {
       nixosConfigurations = {
+        # x86_64 system with hyprpanel
         Tatara = nixpkgs.lib.nixosSystem {
           system = systemSettings.x86_64-linux.system;
           specialArgs = {
@@ -76,10 +77,11 @@
           ];
         };
         
+        # aarch64 system without hyprpanel
         Nixilla = nixpkgs.lib.nixosSystem {
           system = systemSettings.aarch64-linux.system;
           specialArgs = {
-            inherit nixvim hyprpanel;
+            inherit nixvim;  # removed hyprpanel
             pkgs-unstable = systemSettings.aarch64-linux.pkgs-unstable;
           };
           modules = [ 
@@ -90,13 +92,13 @@
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.extraSpecialArgs = {
-                inherit nixvim hyprpanel;
+                inherit nixvim;  # removed hyprpanel
               };
               home-manager.users.fabric = {
                 imports = [
                   ./home.nix
                   nixvim.homeManagerModules.nixvim
-                  hyprpanel.homeManagerModules.hyprpanel
+                  # removed hyprpanel module
                 ];
               };
             }
