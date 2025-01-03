@@ -105,5 +105,19 @@
           ];
         };
       };
+
+
+      homeConfigurations = {
+      "fabric@Nixilla" = home-manager.lib.homeManagerConfiguration {
+        pkgs = systemSettings.aarch64-linux.pkgs;
+        extraSpecialArgs = {
+          inherit nixvim;
+        };
+        modules = [
+          ./home.nix
+          nixvim.homeManagerModules.nixvim
+        ];
+      };
+    };
     };
 }
