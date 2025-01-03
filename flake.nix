@@ -28,22 +28,21 @@
       # Helper function to generate system-specific attributes
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
       
-      # Nixpkgs instantiated for supported systems
-      nixpkgsFor = forAllSystems (system: import nixpkgs {
-        inherit system;
-      });
-      
-      # Unstable pkgs instantiated for supported systems
-      nixpkgsUnstableFor = forAllSystems (system: import nixpkgs-unstable {
-        inherit system;
-      });
+      # Common nixpkgs config
+      nixpkgsConfig = {
+        config = {
+          allowUnfree = true;
+        };
+      };
     in {
       nixosConfigurations = {
         # x86_64 system
         Tatara = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
-          pkgs = nixpkgsFor."x86_64-linux";
+          specialArgs = { inherit nixpkgs-unstable; };
           modules = [ 
+            # Apply nixpkgs configuration
+            { nixpkgs = nixpkgsConfig; }
             ./hosts/Tatara/default.nix
             home-manager.nixosModules.home-manager
             {
@@ -66,8 +65,10 @@
         # aarch64 system
         Nixilla = nixpkgs.lib.nixosSystem {
           system = "aarch64-linux";
-          pkgs = nixpkgsFor."aarch64-linux";
+          specialArgs = { inherit nixpkgs-unstable; };
           modules = [ 
+            # Apply nixpkgs configuration
+            { nixpkgs = nixpkgsConfig; }
             ./hosts/Nixilla/default.nix
             home-manager.nixosModules.home-manager
             {
@@ -91,7 +92,7 @@
       # For standalone home-manager usage (if needed)
       homeConfigurations = forAllSystems (system: {
         "fabric" = home-manager.lib.homeManagerConfiguration {
-          pkgs = nixpkgsFor.${system};
+          pkgs = import nixpkgs (nixpkgsConfig // { inherit system; });
           extraSpecialArgs = {
             inherit nixvim hyprpanel;
           };
