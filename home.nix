@@ -22,7 +22,7 @@
     mpv
     nerdfonts
     tmux
-    discord
+    # discord
     fzf
     yazi
     zsh
@@ -617,7 +617,7 @@
       "$menu" = "wofi --show drun";
 
       windowrule = [
-        "workspace 6 silent,^(discord)$"
+        # "workspace 6 silent,^(discord)$"
         "workspace 7 silent,^(kitty)$"
         "workspace 8 silent,^(firefox)$"
       ];
