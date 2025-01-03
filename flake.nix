@@ -23,43 +23,47 @@
   outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, nixvim, hyprpanel, ... }: 
     let
       # System types to support
-      supportedSystems = [ "x86_64-linux" "aarch64-linux" ];
-      
-      # Common nixpkgs config
-      nixpkgsConfig = {
-        config = {
-          allowUnfree = true;
+      systemSettings = {
+        x86_64-linux = {
+          system = "x86_64-linux";
+          pkgs = import nixpkgs {
+            system = "x86_64-linux";
+            config.allowUnfree = true;
+          };
+          pkgs-unstable = import nixpkgs-unstable {
+            system = "x86_64-linux";
+            config.allowUnfree = true;
+          };
         };
-      };
-
-      # Helper to create system-specific pkgs
-      pkgsFor = system: import nixpkgs {
-        inherit system;
-        config = nixpkgsConfig.config;
-      };
-
-      pkgsUnstableFor = system: import nixpkgs-unstable {
-        inherit system;
-        config = nixpkgsConfig.config;
+        aarch64-linux = {
+          system = "aarch64-linux";
+          pkgs = import nixpkgs {
+            system = "aarch64-linux";
+            config.allowUnfree = true;
+          };
+          pkgs-unstable = import nixpkgs-unstable {
+            system = "aarch64-linux";
+            config.allowUnfree = true;
+          };
+        };
       };
     in {
       nixosConfigurations = {
-        # x86_64 system
         Tatara = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
+          system = systemSettings.x86_64-linux.system;
           specialArgs = {
-            pkgs-unstable = pkgsUnstableFor "x86_64-linux";
+            inherit nixvim hyprpanel;
+            pkgs-unstable = systemSettings.x86_64-linux.pkgs-unstable;
           };
           modules = [ 
-            { nixpkgs = nixpkgsConfig; }
             ./hosts/Tatara/default.nix
             home-manager.nixosModules.home-manager
             {
+              nixpkgs.config.allowUnfree = true;
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.extraSpecialArgs = {
                 inherit nixvim hyprpanel;
-                pkgs = pkgsFor "x86_64-linux";
               };
               home-manager.users.fabric = {
                 imports = [
@@ -72,22 +76,21 @@
           ];
         };
         
-        # aarch64 system
         Nixilla = nixpkgs.lib.nixosSystem {
-          system = "aarch64-linux";
+          system = systemSettings.aarch64-linux.system;
           specialArgs = {
-            pkgs-unstable = pkgsUnstableFor "aarch64-linux";
+            inherit nixvim hyprpanel;
+            pkgs-unstable = systemSettings.aarch64-linux.pkgs-unstable;
           };
           modules = [ 
-            { nixpkgs = nixpkgsConfig; }
             ./hosts/Nixilla/default.nix
             home-manager.nixosModules.home-manager
             {
+              nixpkgs.config.allowUnfree = true;
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.extraSpecialArgs = {
                 inherit nixvim hyprpanel;
-                pkgs = pkgsFor "aarch64-linux";
               };
               home-manager.users.fabric = {
                 imports = [
@@ -100,21 +103,5 @@
           ];
         };
       };
-      
-      # For standalone home-manager usage (if needed)
-      homeConfigurations = builtins.listToAttrs (map (system: {
-        name = "fabric@${system}";
-        value = home-manager.lib.homeManagerConfiguration {
-          pkgs = pkgsFor system;
-          extraSpecialArgs = {
-            inherit nixvim hyprpanel;
-          };
-          modules = [
-            ./home.nix
-            nixvim.homeManagerModules.nixvim
-            hyprpanel.homeManagerModules.hyprpanel
-          ];
-        };
-      }) supportedSystems);
     };
 }
