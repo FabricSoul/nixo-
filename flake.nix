@@ -18,9 +18,13 @@
       url = "github:nix-community/nixvim/nixos-24.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    hyprland = {
+        url = "github:hyprwm/Hyprland";
+      };
   };
   
-  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, nixvim, hyprpanel, ... }: 
+  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, nixvim, hyprpanel, hyprland, ... }: 
     let
       # System types to support
       systemSettings = {
@@ -53,7 +57,7 @@
         Tatara = nixpkgs.lib.nixosSystem {
           system = systemSettings.x86_64-linux.system;
           specialArgs = {
-            inherit nixvim hyprpanel;
+            inherit nixvim hyprpanel hyprland;
             pkgs-unstable = systemSettings.x86_64-linux.pkgs-unstable;
           };
           modules = [ 
@@ -81,7 +85,7 @@
         Nixilla = nixpkgs.lib.nixosSystem {
           system = systemSettings.aarch64-linux.system;
           specialArgs = {
-            inherit nixvim;  # removed hyprpanel
+            inherit nixvim hyprland;  # removed hyprpanel
             pkgs-unstable = systemSettings.aarch64-linux.pkgs-unstable;
           };
           modules = [ 

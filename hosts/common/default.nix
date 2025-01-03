@@ -3,7 +3,11 @@
 {
   # Put all your common configurations here
   # Like basic system settings, networking, users, etc.
-  nix.settings.experimental-features = ["nix-command" "flakes"];
+  nix.settings = {
+    experimental-features = ["nix-command" "flakes"];
+    substituters = ["https://hyprland.cachix.org"];
+    trusted-public-keys = ["hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="];
+  };
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -76,8 +80,14 @@
     defaultSession = "hyprland";
   };
   programs = {
-    hyprland.enable = true;
     zsh.enable = true;
+    hyprland = {
+      enable = true;
+      # set the flake package
+      package = hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+      # make sure to also set the portal package, so that they are in sync
+      portalPackage = hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
+  };
   };
   virtualisation.docker.enable = true;
   system.stateVersion = "24.11"; # Did you read the comment?
