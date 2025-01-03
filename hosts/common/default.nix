@@ -1,5 +1,5 @@
 # hosts/common/default.nix
-{ config, pkgs, ... }:
+{ config, pkgs, hyprland, ... }:
 {
   # Put all your common configurations here
   # Like basic system settings, networking, users, etc.
