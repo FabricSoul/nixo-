@@ -26,8 +26,12 @@
   outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, nixvim, hyprpanel,...}: 
     let
       lib = nixpkgs.lib;
-      pkgs = nixpkgs.legacyPackages."x86_64-linux";
-      pkgsUnstable = nixpkgs-unstable.legacyPackages."x86_64-linux";
+      systems = [ "x86_64-linux" "aarch64-linux" ];
+      forAllSystems = nixpkgs.lib.genAttrs systems;
+      pkgsFor = system: import nixpkgs {
+        inherit system;
+        config.allowUnfree = true;  # if you need unfree packages
+      };
     in {
       nixosConfigurations = {
         Tatara = lib.nixosSystem {
