@@ -24,9 +24,6 @@
     variant = "";
   };
 
-  environment.systemPackages = with pkgs; [
-    home-manager
-  ];
   
   programs.home-manager.enable = true;
 
@@ -52,6 +49,7 @@
     libnotify
     kitty
     zsh
+    home-manager
   ];
 
   fonts.packages = with pkgs; [nerdfonts];
