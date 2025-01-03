@@ -96,13 +96,12 @@
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.extraSpecialArgs = {
-                inherit nixvim;  # removed hyprpanel
+                inherit nixvim hyprland;
               };
               home-manager.users.fabric = {
                 imports = [
                   ./home.nix
                   nixvim.homeManagerModules.nixvim
-                  # removed hyprpanel module
                 ];
               };
             }
@@ -115,7 +114,7 @@
       "fabric@Nixilla" = home-manager.lib.homeManagerConfiguration {
         pkgs = systemSettings.aarch64-linux.pkgs;
         extraSpecialArgs = {
-          inherit nixvim;
+          inherit nixvim hyprland;
         };
         modules = [
           ./home.nix
