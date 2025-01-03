@@ -25,23 +25,32 @@
       # System types to support
       supportedSystems = [ "x86_64-linux" "aarch64-linux" ];
       
-      # Helper function to generate system-specific attributes
-      forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
-      
       # Common nixpkgs config
       nixpkgsConfig = {
         config = {
           allowUnfree = true;
         };
       };
+
+      # Helper to create system-specific pkgs
+      pkgsFor = system: import nixpkgs {
+        inherit system;
+        config = nixpkgsConfig.config;
+      };
+
+      pkgsUnstableFor = system: import nixpkgs-unstable {
+        inherit system;
+        config = nixpkgsConfig.config;
+      };
     in {
       nixosConfigurations = {
         # x86_64 system
         Tatara = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
-          specialArgs = { inherit nixpkgs-unstable; };
+          specialArgs = {
+            pkgs-unstable = pkgsUnstableFor "x86_64-linux";
+          };
           modules = [ 
-            # Apply nixpkgs configuration
             { nixpkgs = nixpkgsConfig; }
             ./hosts/Tatara/default.nix
             home-manager.nixosModules.home-manager
@@ -50,6 +59,7 @@
               home-manager.useUserPackages = true;
               home-manager.extraSpecialArgs = {
                 inherit nixvim hyprpanel;
+                pkgs = pkgsFor "x86_64-linux";
               };
               home-manager.users.fabric = {
                 imports = [
@@ -65,9 +75,10 @@
         # aarch64 system
         Nixilla = nixpkgs.lib.nixosSystem {
           system = "aarch64-linux";
-          specialArgs = { inherit nixpkgs-unstable; };
+          specialArgs = {
+            pkgs-unstable = pkgsUnstableFor "aarch64-linux";
+          };
           modules = [ 
-            # Apply nixpkgs configuration
             { nixpkgs = nixpkgsConfig; }
             ./hosts/Nixilla/default.nix
             home-manager.nixosModules.home-manager
@@ -76,6 +87,7 @@
               home-manager.useUserPackages = true;
               home-manager.extraSpecialArgs = {
                 inherit nixvim hyprpanel;
+                pkgs = pkgsFor "aarch64-linux";
               };
               home-manager.users.fabric = {
                 imports = [
@@ -90,9 +102,10 @@
       };
       
       # For standalone home-manager usage (if needed)
-      homeConfigurations = forAllSystems (system: {
-        "fabric" = home-manager.lib.homeManagerConfiguration {
-          pkgs = import nixpkgs (nixpkgsConfig // { inherit system; });
+      homeConfigurations = builtins.listToAttrs (map (system: {
+        name = "fabric@${system}";
+        value = home-manager.lib.homeManagerConfiguration {
+          pkgs = pkgsFor system;
           extraSpecialArgs = {
             inherit nixvim hyprpanel;
           };
@@ -102,6 +115,6 @@
             hyprpanel.homeManagerModules.hyprpanel
           ];
         };
-      });
+      }) supportedSystems);
     };
 }
