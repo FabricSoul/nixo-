@@ -613,7 +613,7 @@
     enable = true;
     package = hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
     settings = {
-      "$mainMod" = "SUPER";
+      "$mainMod" = "ALT";
       "$terminal" = "kitty";
       "$fileManager " = "dolphin";
       "$menu" = "wofi --show drun";
