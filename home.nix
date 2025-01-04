@@ -670,7 +670,7 @@
       #   "DP-1, 1920x1080@144, 1"
       # ];
     };
-  }
+  };
   home.sessionVariables.NIXOS_OZONE_WL = "1";
 
   fonts.fontconfig.enable = true;
