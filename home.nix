@@ -613,7 +613,7 @@
     enable = true;
     package = hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
     settings = {
-      "$mainMod" = "ALT";
+      "$mainMod" = "SUPER";
       "$terminal" = "kitty";
       "$fileManager " = "dolphin";
       "$menu" = "wofi --show drun";
@@ -633,7 +633,8 @@
         "$mainMod, V, togglefloating"
         "$mainMod, SPACE, exec, $menu"
         # "$mainMod, P, pseudo" # dwindle
-        # "$mainMod, J, togglesplit" # dwindle
+        # Add passthrough mode bind
+        "$mainMod, P, submap, passthrough"     # "$mainMod, J, togglesplit" # dwindle
 
         # Move focus with mainMod + arrow keys
         "$mainMod, H, movefocus, l"
@@ -669,7 +670,7 @@
       #   "DP-1, 1920x1080@144, 1"
       # ];
     };
-  };
+  }
   home.sessionVariables.NIXOS_OZONE_WL = "1";
 
   fonts.fontconfig.enable = true;
